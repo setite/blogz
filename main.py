@@ -44,7 +44,7 @@ class User(db.Model):
 @app.before_request
 def require_login():
     # TODO Look-up the alternate way to whitelist
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'signup', 'blog']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
@@ -123,17 +123,16 @@ def blog():
 
     blogs = Blog.query.all()
     blog_id = request.args.get('id')
+    users = User.query.all()
 
     if blog_id:
         blog = Blog.query.get(blog_id)
-        # title = blog.title
-        # body = blog.body
         return render_template('blog_entry.html', blog=blog)
     else:
         blogs = Blog.query.all()
         # first of the pair matches to {{}} in for loop inblogs the .html
         # template, second of the pair matches to variable declared above
-        return render_template('blogs.html', blogs=blogs)
+        return render_template('blogs.html', blogs=blogs, users=users)
 
 
 @app.route('/newpost', methods=['GET', 'POST'])
@@ -144,7 +143,7 @@ def new_post():
     if request.method == 'POST':
         new_title = request.form['title']
         new_body = request.form['body']
-        new_blog = Blog(new_title, new_body)
+        new_blog = Blog(new_title, new_body, owner)
 
         if new_blog.is_valid():
             db.session.add(new_blog)

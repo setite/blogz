@@ -8,9 +8,11 @@
 
 <body>
     <nav>
-        <a href="/">Main Blog Page</a>
-        <img src="/static/stargate.png" alt="Stargate Icon" style="width:100px;height:50px;" />
-        <a href="/newpost">Add a Blog Entry</a>
+        <a href="/">Main Blog Page</a><img src="/static/stargate.png" alt="Stargate Icon" style="width:40px;height:27px;" />
+        <a href="/blog">All Posts</a><img src="/static/stargate.png" alt="Stargate Icon" style="width:40px;height:27px;" />
+        <a href="/newpost">Add a Blog Entry</a><img src="/static/stargate.png" alt="Stargate Icon" style="width:40px;height:27px;" />
+        <a href="/login">Login</a><img src="/static/stargate.png" alt="Stargate Icon" style="width:40px;height:27px;" />
+        <a href="/logout">Logout</a>
     </nav>
     <div>
     {% with messages = get_flashed_messages() %}

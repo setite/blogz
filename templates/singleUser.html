@@ -7,13 +7,14 @@
     {% else %}
 
     <hr />
-
+<h1>{{User.username}}</h1>
     <ul>
         {% for blog in blogs %}
         <li>
-            <h2><a href="/blog?id={{blog.id}}">{{blog.title}}</a></h2>
-            <p>{{blog.body}}</p>
-        </li>
+                <h2><a href="/blog?id={{blog.id}}">{{blog.owner}}</a></h2>
+                <h3><a href="/blog?id={{blog.id}}">{{blog.title}}</a></h3>
+                <p>{{blog.body}}</p>
+            </li>
         {% endfor %}
     </ul>
 
