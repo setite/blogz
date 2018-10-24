@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>LOGIN</h1>
+    <form action="/login" method='post'>
+    <!-- <form method='post'> -->
+    <div>
+        <label for="title">Email Addy: </label>
+        <br>
+        <input type="email" name='email' />
+    </div>
+    <div>
+        <label for="body">Password: </label>
+        <br>
+        <input type="password" name='password' />
+    </div>
+        <input type="submit" value='LOGIN' />
+    </form>
+    <h3>Please <a href= '/signup'>Sign Up</a> if you have not already.</h3>
+
+{% endblock %}
