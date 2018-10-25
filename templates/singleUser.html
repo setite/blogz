@@ -1,17 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Build A Blog SINGLEUSER</h1>
+    <h1>Blogz SINGLEUSER</h1>
     {% if blogs|length == 0 %}
     <p>No Blogs yet</p>
     {% else %}
 
     <hr />
-<h1>{{User.username}}</h1>
     <ul>
         {% for blog in blogs %}
         <li>
-                <h2><a href="/blog?id={{blog.id}}">{{blog.owner}}</a></h2>
                 <h3><a href="/blog?id={{blog.id}}">{{blog.title}}</a></h3>
                 <p>{{blog.body}}</p>
             </li>

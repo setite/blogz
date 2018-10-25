@@ -44,14 +44,17 @@ class User(db.Model):
 @app.before_request
 def require_login():
     # TODO Look-up the alternate way to whitelist
-    allowed_routes = ['login', 'signup', 'blog']
+    allowed_routes = ['login', 'signup', 'blog', 'index']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return redirect("/blog")
+
+    users = User.query.all()
+
+    return render_template("index.html", users=users)
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -69,19 +72,19 @@ def signup():
         if password == "":
             error["pass_error"] = "Password cannot be blank"
         elif len(password) < 2:
-            error["pass_error"] = "Password must be more than two characters long"
+            error["pass_error"] = "Password must be > 2 characters in length."
         else:
             if password != verify:
                 error["verify_error"] = "Password and Verify must match"
 
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            error["user_error"] = "There is already somebody with that username"
+            error["user_error"] = "That username exists, choose another."
         if (
             error["user_error"] == "" and
             error["pass_error"] == "" and
             error["verify_error"] == ""
-            ):
+             ):
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
@@ -90,8 +93,9 @@ def signup():
         else:
             # TODO - user better response messaging
             # Trying out flash and error handler
-            flash("There is already somebody with that username")
+            flash("You must complete all fields")
             error["user_error"] = "Username Taken, Try Another"
+            return render_template('signup.html')
     else:
         return render_template('signup.html')
 
@@ -105,7 +109,7 @@ def login():
         if user and user.password == password:
             session['username'] = username
             flash("Logged in")
-            return redirect('/')
+            return redirect('/newpost')
         else:
             flash('User password incorrect, or user does not exist', 'error')
 
@@ -121,18 +125,26 @@ def logout():
 @app.route('/blog', methods=['GET', 'POST'])
 def blog():
 
-    blogs = Blog.query.all()
     blog_id = request.args.get('id')
+    user_id = request.args.get('user')
+    blogs = Blog.query.filter_by(id=user_id)
+    # userId = Blog.query.filter_by(username=session['username']).first()
     users = User.query.all()
+    # userId = User.query.filter_by(id=)
 
     if blog_id:
         blog = Blog.query.get(blog_id)
         return render_template('blog_entry.html', blog=blog)
+    if user_id:
+        blogs = Blog.query.filter_by(owner_id=user_id).all()
+        return render_template('singleUser.html',
+                               blogs=blogs, users=users, user=user_id)
+    # if user_id:
+    #     user = user_id
+    #     return render_template('singleUser.html',
+    #                            blogs=user.blogs, users=users, user=user)
     else:
-        blogs = Blog.query.all()
-        # first of the pair matches to {{}} in for loop inblogs the .html
-        # template, second of the pair matches to variable declared above
-        return render_template('blogs.html', blogs=blogs, users=users)
+        return redirect('/')
 
 
 @app.route('/newpost', methods=['GET', 'POST'])
